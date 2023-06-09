@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:asteen_ka_sanp/widgets/blank_pixel.dart';
 import 'package:asteen_ka_sanp/widgets/food_pixel.dart';
@@ -32,31 +33,64 @@ class _HomePageState extends State<HomePage> {
   void startGame() {
     Timer.periodic(const Duration(milliseconds: 200), (timer) {
       setState(() {
+        // keep snake moving
         moveSnake();
+        // snake eats food?
       });
     });
+  }
+
+  void eatFood() {
+    // new food shouldn't be where snake is
+    while (snakePosition.contains(foodPosition)) {
+      foodPosition = Random().nextInt(area);
+    }
   }
 
   void moveSnake() {
     // add new head
     switch (currentDirection) {
       case snakeDirection.RIGHT:
-        snakePosition.add(snakePosition.last + 1);
+        // if at wall re-adjust
+        if (snakePosition.last % rows == 9) {
+          snakePosition.add(snakePosition.last + 1 - rows);
+        } else {
+          snakePosition.add(snakePosition.last + 1);
+        }
         break;
       case snakeDirection.LEFT:
-        snakePosition.add(snakePosition.last - 1);
+        // if at wall re-adjust
+        if (snakePosition.last % rows == 0) {
+          snakePosition.add(snakePosition.last - 1 + rows);
+        } else {
+          snakePosition.add(snakePosition.last - 1);
+        }
         break;
       case snakeDirection.UP:
-        snakePosition.add(snakePosition.last - rows);
+        // if at wall re-adjust
+        if (snakePosition.last < rows) {
+          snakePosition.add(snakePosition.last - rows + area);
+        } else {
+          snakePosition.add(snakePosition.last - rows);
+        }
         break;
       case snakeDirection.DOWN:
-        snakePosition.add(snakePosition.last + rows);
+        // if at wall re-adjust
+        if (snakePosition.last > area - rows) {
+          snakePosition.add(snakePosition.last + rows - area);
+        } else {
+          snakePosition.add(snakePosition.last + rows);
+        }
         break;
       default:
     }
 
-    // remove tail
-    snakePosition.removeAt(0);
+    // eat food or remove tail
+    if (snakePosition.last == foodPosition) {
+      eatFood();
+    } else {
+      snakePosition.removeAt(0);
+    }
   }
 
   @override
@@ -75,16 +109,20 @@ class _HomePageState extends State<HomePage> {
             flex: 3,
             child: GestureDetector(
               onVerticalDragUpdate: (details) {
-                if (details.delta.dy > 0) {
+                if (details.delta.dy > 0 &&
+                    currentDirection != snakeDirection.UP) {
                   currentDirection = snakeDirection.DOWN;
-                } else if (details.delta.dy < 0) {
+                } else if (details.delta.dy < 0 &&
+                    currentDirection != snakeDirection.DOWN) {
                   currentDirection = snakeDirection.UP;
                 }
               },
               onHorizontalDragUpdate: (details) {
-                if (details.delta.dx > 0) {
+                if (details.delta.dx > 0 &&
+                    currentDirection != snakeDirection.LEFT) {
                   currentDirection = snakeDirection.RIGHT;
-                } else if (details.delta.dx < 0) {
+                } else if (details.delta.dx < 0 &&
+                    currentDirection != snakeDirection.RIGHT) {
                   currentDirection = snakeDirection.LEFT;
                 }
               },
