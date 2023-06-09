@@ -31,15 +31,29 @@ class _HomePageState extends State<HomePage> {
 
   // start game method
   void startGame() {
-    Timer.periodic(const Duration(milliseconds: 200), (timer) {
+    Timer.periodic(const Duration(milliseconds: 135), (timer) {
       setState(() {
-        // keep snake moving
+        // keep the snake moving
         moveSnake();
-        // snake eats food?
+
+        // check if game over
+        if (gameOver()) {
+          timer.cancel();
+          // show game over dialogue to user
+          showDialog(
+            context: context,
+            builder: (context) {
+              return const AlertDialog(
+                title: Text('Game over'),
+              );
+            },
+          );
+        }
       });
     });
   }
 
+  // eat food method
   void eatFood() {
     // new food shouldn't be where snake is
     while (snakePosition.contains(foodPosition)) {
@@ -47,6 +61,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  // move snake method
   void moveSnake() {
     // add new head
     switch (currentDirection) {
@@ -90,6 +105,21 @@ class _HomePageState extends State<HomePage> {
       eatFood();
     } else {
       snakePosition.removeAt(0);
+    }
+  }
+
+  // game over method
+  bool gameOver() {
+    // game over when snake runs into itself
+    // when there is a duplicate position in the snake position lits
+
+    // body of the snake
+    List<int> snakeBody = snakePosition.sublist(0, snakePosition.length - 1);
+
+    if (snakeBody.contains(snakePosition.last)) {
+      return true;
+    } else {
+      return false;
     }
   }
 
