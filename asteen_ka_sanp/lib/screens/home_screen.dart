@@ -6,6 +6,7 @@ import 'package:asteen_ka_sanp/widgets/snake_pixel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:vibration/vibration.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -17,6 +18,8 @@ class HomeScreen extends StatefulWidget {
 enum SnakeDirection { up, down, left, right }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // audio player
+
   // grid dimensions
   int rows = 10;
   int area = 100;
@@ -49,6 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
         // check if game over
         if (gameOver()) {
           timer.cancel();
+          Vibration.vibrate();
           // show game over dialogue to user
           showDialog(
             barrierDismissible: false,
@@ -102,6 +106,8 @@ class _HomeScreenState extends State<HomeScreen> {
       foodPosition = 63;
     });
   }
+
+  // play sound efffect
 
   // eat food method
   void eatFood() {
