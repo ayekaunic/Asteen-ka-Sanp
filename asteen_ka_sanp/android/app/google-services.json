@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "808357821587",
+    "project_id": "asteen",
+    "storage_bucket": "asteen.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:808357821587:android:d45758cae8bd357f036166",
+        "android_client_info": {
+          "package_name": "com.example.asteen_ka_sanp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "808357821587-0b6uu0gso21d0347akfl55eq4c8r96nd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDo8aXLyOrFlyuWB9dzax24j2Os5dQbRio"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "808357821587-0b6uu0gso21d0347akfl55eq4c8r96nd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

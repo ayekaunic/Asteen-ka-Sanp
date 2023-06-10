@@ -1,7 +1,7 @@
 import 'package:asteen_ka_sanp/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
   runApp(const MyApp());
 }
 

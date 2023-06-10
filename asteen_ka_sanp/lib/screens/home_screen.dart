@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:vibration/vibration.dart';
+import 'package:just_audio/just_audio.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,6 +19,21 @@ class HomeScreen extends StatefulWidget {
 enum SnakeDirection { up, down, left, right }
 
 class _HomeScreenState extends State<HomeScreen> {
+  // audio player
+  late AudioPlayer player;
+
+  @override
+  void initState() {
+    super.initState();
+    player = AudioPlayer();
+  }
+
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
+  }
+
   // grid dimensions
   int rows = 10;
   int area = 100;
@@ -39,16 +55,22 @@ class _HomeScreenState extends State<HomeScreen> {
   int foodPosition = 63;
 
   // start game method
-  void startGame() {
+  void startGame() async {
+    await player.setAsset('assets/audio/game_start.mp3');
+    player.play();
+    await Future.delayed(player.duration!);
     gameHasStarted = true;
     currentDirection = SnakeDirection.right;
     Timer.periodic(const Duration(milliseconds: 108), (timer) {
-      setState(() {
+      setState(() async {
         // keep the snake moving
         moveSnake();
 
         // check if game over
         if (gameOver()) {
+          await player.setAsset('assets/audio/game_over.mp3');
+          player.play();
+          gameHasStarted = false;
           timer.cancel();
           Vibration.vibrate();
           // show game over dialogue to user
@@ -63,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   MaterialButton(
                     onPressed: () {
                       Share.share(
-                          'Just racked up $currentScore pellets on Asteen ka Sanp!😎');
+                          'Just racked up $currentScore pellets in Asteen ka Sanp!😎');
                     },
                     color: Colors.blueAccent,
                     child: const Text('Share'),
@@ -117,7 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // move snake method
-  void moveSnake() {
+  void moveSnake() async {
     // add new head
     switch (currentDirection) {
       case SnakeDirection.right:
@@ -157,6 +179,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     // eat food or remove tail
     if (snakePosition.last == foodPosition) {
+      await player.setAsset('assets/audio/pellet.mp3');
+      player.play();
       eatFood();
     } else {
       snakePosition.removeAt(0);
