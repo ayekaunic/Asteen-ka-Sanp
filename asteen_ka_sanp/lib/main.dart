@@ -1,4 +1,4 @@
-import 'package:asteen_ka_sanp/screens/homepage.dart';
+import 'package:asteen_ka_sanp/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -10,9 +10,12 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomePage(),
+      title: 'Asteen ka Sanp',
+      themeMode: ThemeMode.system,
+      darkTheme: ThemeData.dark(),
+      home: const HomeScreen(),
     );
   }
 }

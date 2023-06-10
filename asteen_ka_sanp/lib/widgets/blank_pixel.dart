@@ -9,7 +9,7 @@ class BlankPixel extends StatelessWidget {
       padding: const EdgeInsets.all(2.0),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.yellow[700],
+          color: Colors.amber,
           borderRadius: BorderRadius.circular(5),
         ),
       ),
