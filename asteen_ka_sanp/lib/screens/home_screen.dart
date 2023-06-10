@@ -56,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // start game method
   void startGame() async {
-    await player.setAsset('assets/audio/game_start.mp3');
+    await player.setAsset('assets/audio/ping.mp3');
     player.play();
     await Future.delayed(player.duration!);
     gameHasStarted = true;
