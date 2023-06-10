@@ -13,24 +13,31 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-enum snakeDirection { UP, DOWN, LEFT, RIGHT }
+enum SnakeDirection { up, down, left, right }
 
 class _HomePageState extends State<HomePage> {
   // grid dimensions
   int rows = 10;
   int area = 100;
 
+  // game started
+  bool gameHasStarted = false;
+
+  // user score
+  int currentScore = 0;
+
   // snake position
   List<int> snakePosition = [0, 1, 2];
 
   // snake direction (initially right)
-  var currentDirection = snakeDirection.RIGHT;
+  var currentDirection = SnakeDirection.right;
 
   // food position
   int foodPosition = 63;
 
   // start game method
   void startGame() {
+    gameHasStarted = true;
     Timer.periodic(const Duration(milliseconds: 135), (timer) {
       setState(() {
         // keep the snake moving
@@ -41,10 +48,32 @@ class _HomePageState extends State<HomePage> {
           timer.cancel();
           // show game over dialogue to user
           showDialog(
+            barrierDismissible: false,
             context: context,
             builder: (context) {
-              return const AlertDialog(
-                title: Text('Game over'),
+              return AlertDialog(
+                title: const Text('Game over'),
+                content: Column(
+                  children: [
+                    Text('Your score is: $currentScore'),
+                    const TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Enter username',
+                      ),
+                    ),
+                  ],
+                ),
+                actions: [
+                  MaterialButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      submitScore();
+                      newGame();
+                    },
+                    color: Colors.pink,
+                    child: const Text('Submit'),
+                  )
+                ],
               );
             },
           );
@@ -53,8 +82,24 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  // submit score method
+  void submitScore() {}
+
+  // new game method
+  void newGame() {
+    setState(() {
+      // reset game
+      gameHasStarted = false;
+      currentScore = 0;
+      snakePosition = [0, 1, 2];
+      currentDirection = SnakeDirection.right;
+      foodPosition = 63;
+    });
+  }
+
   // eat food method
   void eatFood() {
+    currentScore++;
     // new food shouldn't be where snake is
     while (snakePosition.contains(foodPosition)) {
       foodPosition = Random().nextInt(area);
@@ -65,7 +110,7 @@ class _HomePageState extends State<HomePage> {
   void moveSnake() {
     // add new head
     switch (currentDirection) {
-      case snakeDirection.RIGHT:
+      case SnakeDirection.right:
         // if at wall re-adjust
         if (snakePosition.last % rows == 9) {
           snakePosition.add(snakePosition.last + 1 - rows);
@@ -73,7 +118,7 @@ class _HomePageState extends State<HomePage> {
           snakePosition.add(snakePosition.last + 1);
         }
         break;
-      case snakeDirection.LEFT:
+      case SnakeDirection.left:
         // if at wall re-adjust
         if (snakePosition.last % rows == 0) {
           snakePosition.add(snakePosition.last - 1 + rows);
@@ -81,7 +126,7 @@ class _HomePageState extends State<HomePage> {
           snakePosition.add(snakePosition.last - 1);
         }
         break;
-      case snakeDirection.UP:
+      case SnakeDirection.up:
         // if at wall re-adjust
         if (snakePosition.last < rows) {
           snakePosition.add(snakePosition.last - rows + area);
@@ -89,7 +134,7 @@ class _HomePageState extends State<HomePage> {
           snakePosition.add(snakePosition.last - rows);
         }
         break;
-      case snakeDirection.DOWN:
+      case SnakeDirection.down:
         // if at wall re-adjust
         if (snakePosition.last > area - rows) {
           snakePosition.add(snakePosition.last + rows - area);
@@ -131,7 +176,40 @@ class _HomePageState extends State<HomePage> {
         children: [
           // high scores
           Expanded(
-            child: Container(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // user current score
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      'Current score:',
+                      style: TextStyle(
+                        fontSize: 23,
+                        color: Colors.amber,
+                      ),
+                    ),
+                    Text(
+                      currentScore.toString(),
+                      style: const TextStyle(
+                        fontSize: 36,
+                        color: Colors.amber,
+                      ),
+                    ),
+                  ],
+                ),
+
+                // highscores
+                const Text(
+                  'Highscores...',
+                  style: TextStyle(
+                    fontSize: 23,
+                    color: Colors.amber,
+                  ),
+                ),
+              ],
+            ),
           ),
 
           // game grid
@@ -140,20 +218,20 @@ class _HomePageState extends State<HomePage> {
             child: GestureDetector(
               onVerticalDragUpdate: (details) {
                 if (details.delta.dy > 0 &&
-                    currentDirection != snakeDirection.UP) {
-                  currentDirection = snakeDirection.DOWN;
+                    currentDirection != SnakeDirection.up) {
+                  currentDirection = SnakeDirection.down;
                 } else if (details.delta.dy < 0 &&
-                    currentDirection != snakeDirection.DOWN) {
-                  currentDirection = snakeDirection.UP;
+                    currentDirection != SnakeDirection.down) {
+                  currentDirection = SnakeDirection.up;
                 }
               },
               onHorizontalDragUpdate: (details) {
                 if (details.delta.dx > 0 &&
-                    currentDirection != snakeDirection.LEFT) {
-                  currentDirection = snakeDirection.RIGHT;
+                    currentDirection != SnakeDirection.left) {
+                  currentDirection = SnakeDirection.right;
                 } else if (details.delta.dx < 0 &&
-                    currentDirection != snakeDirection.RIGHT) {
-                  currentDirection = snakeDirection.LEFT;
+                    currentDirection != SnakeDirection.right) {
+                  currentDirection = SnakeDirection.left;
                 }
               },
               child: GridView.builder(
@@ -179,8 +257,8 @@ class _HomePageState extends State<HomePage> {
             child: Container(
               child: Center(
                 child: MaterialButton(
-                  onPressed: startGame,
-                  color: Colors.blueAccent,
+                  onPressed: gameHasStarted ? () {} : startGame,
+                  color: gameHasStarted ? Colors.grey : Colors.blueAccent,
                   child: const Text("Play"),
                 ),
               ),
