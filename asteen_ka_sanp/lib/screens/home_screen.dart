@@ -18,8 +18,6 @@ class HomeScreen extends StatefulWidget {
 enum SnakeDirection { up, down, left, right }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // audio player
-
   // grid dimensions
   int rows = 10;
   int area = 100;
