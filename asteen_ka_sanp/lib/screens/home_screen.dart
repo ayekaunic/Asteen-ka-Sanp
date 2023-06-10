@@ -5,6 +5,7 @@ import 'package:asteen_ka_sanp/widgets/food_pixel.dart';
 import 'package:asteen_ka_sanp/widgets/snake_pixel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -59,13 +60,21 @@ class _HomeScreenState extends State<HomeScreen> {
                 actions: [
                   MaterialButton(
                     onPressed: () {
+                      Share.share(
+                          'Just racked up $currentScore pellets on Asteen ka Sanp!😎');
+                    },
+                    color: Colors.blueAccent,
+                    child: const Text('Share'),
+                  ),
+                  MaterialButton(
+                    onPressed: () {
                       Navigator.pop(context);
                       submitScore();
                       newGame();
                     },
                     color: Colors.blueAccent,
-                    child: const Text('Ok'),
-                  )
+                    child: const Text('New game'),
+                  ),
                 ],
               );
             },
@@ -173,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(9, 0, 9, 0),
+        padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
         child: Column(
           children: [
             // high scores
@@ -184,6 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // user current score
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
                         'Current score:',
@@ -207,6 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // highscores
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       const Text(
                         'Highscore:',
