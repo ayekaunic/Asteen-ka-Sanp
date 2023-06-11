@@ -21,17 +21,29 @@ enum SnakeDirection { up, down, left, right }
 class _HomeScreenState extends State<HomeScreen> {
   // audio player
   late AudioPlayer player;
+  late AudioPlayer backgrounPlayer;
 
   @override
   void initState() {
     super.initState();
     player = AudioPlayer();
+    backgrounPlayer = AudioPlayer();
+    // play background music
+    playBackgroundMusic();
   }
 
   @override
   void dispose() {
     player.dispose();
+    backgrounPlayer.dispose();
     super.dispose();
+  }
+
+  // method to play background music
+  void playBackgroundMusic() async {
+    await backgrounPlayer.setAsset('assets/audio/background_music.mp3');
+    backgrounPlayer.setLoopMode(LoopMode.one);
+    backgrounPlayer.play();
   }
 
   // grid dimensions
@@ -58,7 +70,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void startGame() async {
     await player.setAsset('assets/audio/ping.mp3');
     player.play();
-    await Future.delayed(player.duration!);
     gameHasStarted = true;
     currentDirection = SnakeDirection.right;
     Timer.periodic(const Duration(milliseconds: 108), (timer) {
@@ -124,6 +135,7 @@ class _HomeScreenState extends State<HomeScreen> {
       snakePosition = [0, 1, 2];
       currentDirection = SnakeDirection.right;
       foodPosition = 63;
+      backgrounPlayer.play();
     });
   }
 
